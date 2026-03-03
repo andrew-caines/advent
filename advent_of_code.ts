@@ -35,8 +35,7 @@ So, in this example, 2 reports are safe.
 Analyze the unusual data from the engineers. How many reports are safe?
 
 1. Define a function to check if a report is safe
-2. Loop through each report and count how many are safe
-3. Return the count of safe reports
+2. Loop through each report and record if it's safe or not
 */
 const reports = [
     [7, 6, 4, 2, 1],
@@ -48,28 +47,28 @@ const reports = [
 ];
 
 const isSafeReport = (report: number[]): boolean => {
+
     const diffs = report.map((level, index) => {
-        return index === 0 ? 0 : level - report[index - 1];
+        return index === 0 ? 0 : level - report[index - 1]; //Skip first, do the rest
     });
 
-    // Remove the first dummy 0
-    const realDiffs = diffs.slice(1);
-
-    // Check if all increasing OR all decreasing
+    const realDiffs = diffs.slice(1); // First entry
     const allIncreasing = realDiffs.every(d => d > 0);
     const allDecreasing = realDiffs.every(d => d < 0);
 
     if (!allIncreasing && !allDecreasing) {
-        return false; // Mixed directions
+        return false; // They have to fully inc or dec, not a mix
     }
 
-    // Check if all differences are between 1 and 3 (absolute value)
     return realDiffs.every(d => {
         const abs = Math.abs(d);
-        return abs >= 1 && abs <= 3;
+        return abs >= 1 && abs <= 3; // The drift between then is less than 3 and more than 1
     });
 }
-
+let safeReportsCount = 0;
 reports.forEach(report => {
-    console.log(`${report} is ${isSafeReport(report) ? 'safe' : 'unsafe'}`);
+    if (isSafeReport(report)) {
+        safeReportsCount++;
+    }
 });
+console.log(`Number of safe reports: ${safeReportsCount}`);
